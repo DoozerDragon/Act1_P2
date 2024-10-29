@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encuesta de Programación</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/vue3.js"></script>
+</head>
+<body>
+    <div id="app">
+        <!-- Pantalla de carga -->
+        <div v-if="cargando" id="loader">Cargando...</div>
+
+        <!-- Contenido de la encuesta -->
+        <div v-else>
+            <header>
+                <h1 class="titulo">Encuesta de Programación</h1>
+            </header>
+            <section class="encuesta" v-if="!enviado && !animacionEnviando">
+                <form @submit.prevent="enviarEncuesta">
+                    <!-- Pregunta inicial -->
+                    <p>¿Te gusta programar?</p>
+                    <label>
+                        <input type="radio" v-model="gustaProgramar" value="Sí"> Sí
+                    </label>
+                    <label>
+                        <input type="radio" v-model="gustaProgramar" value="No"> No
+                    </label>
+
+                    <!-- Mostrar si gustaProgramar es "Sí" -->
+                    <div v-if="gustaProgramar === 'Sí'">
+                        <p>¿Cuántos años llevas programando?</p>
+                        <input type="number" v-model="aniosProgramando" min="0" placeholder="Años de experiencia">
+
+                        <!-- Mostrar si se ha ingresado un valor en aniosProgramando -->
+                        <div v-if="aniosProgramando > 0">
+                            <p>Cuéntanos tu experiencia programando:</p>
+                            <textarea v-model="descripcionExperiencia" placeholder="Escribe tu experiencia aquí"></textarea>
+
+                            <p>¿Cuántos lenguajes de programación conoces? Ingresa los lenguajes uno por uno:</p>
+                            <input type="text" v-model="nuevoLenguaje" placeholder="Ingrese un lenguaje">
+                            <button type="button" @click="agregarLenguaje">Agregar</button>
+
+                            <ul>
+                                <li v-for="(lenguaje, index) in lenguajes" :key="index">
+                                    {{ lenguaje }}
+                                    <button type="button" @click="eliminarLenguaje(index)">Quitar</button>
+                                </li>
+                            </ul>
+
+                            <button type="submit">Enviar encuesta</button>
+                        </div>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Animación de carta -->
+            <div v-if="animacionEnviando" class="carta-envio">
+                <div class="carta">
+                    <p>Enviando...</p>
+                </div>
+            </div>
+
+            <!-- Sección de resultados -->
+            <section class="resultados" v-if="enviado && !animacionEnviando">
+                <h2 class="titulo">Encuesta de Programación</h2>
+                <p>¿Te gusta programar? <strong>{{ gustaProgramar }}</strong></p>
+                <p>Años de experiencia: <strong>{{ aniosProgramando }}</strong></p>
+                <p>Experiencia: <strong>{{ descripcionExperiencia }}</strong></p>
+                <p>Lenguajes conocidos: <strong>{{ lenguajes.join(', ') }}</strong></p>
+                <p class="mensaje">Gracias por Contestar</p>
+            </section>
+        </div>
+    </div>
+    <script src="js/script.js"></script>
+</body>
+</html>
